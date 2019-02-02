@@ -33,18 +33,18 @@ end
 
 function toggle_checkbox()
   local line = vim.api.nvim_get_current_line()
-  local res = string.match(line, "%[([ x])%]")
-  if res == nil then
-    return
+
+  local line, matches = string.gsub(line, "%[x%]", "[ ]", 1)
+  if matches == 0 then
+    line, matches = string.gsub(line, "%[ %]", "[x]", 1)
+    if matches == 0 then
+      line, matches = string.gsub(line, "^(%s*[%*%-%+]) ", "%1 [ ] ")
+    end
   end
 
-  if res == 'x' then
-    line = string.gsub(line, "%[x%]", "[ ]", 1)
-  else
-    line = string.gsub(line, "%[ %]", "[x]", 1)
+  if matches ~= 0 then
+    vim.api.nvim_set_current_line(line)
   end
-
-  vim.api.nvim_set_current_line(line)
 end
 
 END_LUA
